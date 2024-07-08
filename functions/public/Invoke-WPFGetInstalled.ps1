@@ -16,10 +16,7 @@ function Invoke-WPFGetInstalled {
         return
     }
 
-    if(!(Test-WinUtilPackageManager -winget) -and $checkbox -eq "winget"){
-        Write-Host "==========================================="
-        Write-Host "--       Winget is not installed        ---"
-        Write-Host "==========================================="
+    if(((Test-WinUtilPackageManager -winget) -eq "not-installed") -and $checkbox -eq "winget"){
         return
     }
 

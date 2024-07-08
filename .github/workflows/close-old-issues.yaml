@@ -3,50 +3,37 @@ name: Close Inactive Issues
 on:
   schedule:
     - cron: '0 0 * * *'  # Run daily
+  workflow_dispatch:  # This line enables manual triggering
 
 jobs:
   close-issues:
     runs-on: ubuntu-latest
-
+    permissions:
+      issues: write  # Ensure necessary permissions for issues
+      pull-requests: none
+      contents: none
     steps:
     - name: Close inactive issues
-      uses: actions/github-script@v7
+      uses: actions/stale@v8
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const octokit = context.octokit;
-
-          // Get the repository owner and name
-          const { owner, repo } = context.repo;
-
-          // Define the inactivity period (14 days)
-          const inactivityPeriod = new Date();
-          inactivityPeriod.setDate(inactivityPeriod.getDate() - 14);
-
-          // Get all open issues
-          const { data: issues } = await octokit.rest.issues.listForRepo({
-            owner,
-            repo,
-            state: 'open',
-          });
-
-          // Close issues inactive for more than the inactivity period
-          for (const issue of issues) {
-            const lastCommentDate = issue.updated_at;
-            if (new Date(lastCommentDate) < inactivityPeriod) {
-              // Close the issue and add a comment
-              await octokit.rest.issues.update({
-                owner,
-                repo,
-                issue_number: issue.number,
-                state: 'closed',
-              });
-
-              await octokit.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number: issue.number,
-                body: 'Closed due to inactivity',
-              });
-            }
-          }
+        # A list of labels to reference when looking through issues,
+        # and only when one (or even more) of these labels are found..
+        # then skip this issue, and never try to stale and/or close it.
+        exempt-issue-labels: "Keep Issue Open"
+        # Split it into two weeks, after one week the issue will be marked as stale,
+        # after another week have pasted without any update.. the issue will then be closed.
+        days-before-issue-stale: 7
+        days-before-issue-close: 7
+        # NEVER mark PRs as Stale or Close + this workflow should never have write permissions on PRs, EVER!
+        days-before-pr-stale: -1
+        days-before-pr-close: -1
+        # Sends a message for both the Stale and Close events of an issue.
+        stale-issue-message: "This issue was marked as stale because it has been inactive for 7 days"
+        close-issue-message: "This issue was closed because it has been inactive for 7 days since it was marked as stale"
+        # Increase this value if the project receives a lot of
+        # PRs (yes.. apparently they're processed no matter what) & Issues.
+        # Default value for it (according to the docs) is 30
+        operations-per-run: 200
+        # Make this field equal true if you want to test your configuration if it works correctly or not
+        debug-only: false
+        repo-token: ${{ secrets.GITHUB_TOKEN }}

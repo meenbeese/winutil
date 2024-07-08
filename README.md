@@ -1,6 +1,10 @@
 # Chris Titus Tech's Windows Utility
 
-This utility is a compilation of Windows tasks I perform on each Windows system I use. It is meant to streamline *installs*, debloat with *tweaks*, troubleshoot with *config*, and fix Windows *updates*. I am extremely picky about any contributions to keep this project clean and efficient. 
+[![Version](https://img.shields.io/github/v/release/ChrisTitusTech/winutil?color=7a39fb)](https://github.com/ChrisTitusTech/winutil/releases/latest)
+![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/ChrisTitusTech/winutil/latest/total)
+
+
+This utility is a compilation of Windows tasks I perform on each Windows system I use. It is meant to streamline *installs*, debloat with *tweaks*, troubleshoot with *config*, and fix Windows *updates*. I am extremely picky about any contributions to keep this project clean and efficient.
 
 ![screen-install](screen-install.png)
 
@@ -10,7 +14,7 @@ Winutil must be run in Admin mode because it performs system-wide tweaks. To ach
 
 1. **Right-Click Method:**
    - Right-click on the start menu.
-   - Choose "PowerShell As Admin" (for Windows 10) or "Windows Terminal As Admin" (for Windows 11).
+   - Choose "Windows PowerShell (Admin)" (for Windows 10) or "Terminal (Admin)" (for Windows 11).
 
 2. **Search and Launch Method:**
    - Press the Windows key.
@@ -22,24 +26,22 @@ Winutil must be run in Admin mode because it performs system-wide tweaks. To ach
 
 #### Simple way
 
+```ps1
+irm "https://christitus.com/win" | iex
 ```
-iwr -useb https://christitus.com/win | iex
-```
-or by executing: 
-```
-irm https://christitus.com/win | iex
-```
-Courtesy of the issue raised at: [#144](/../../issues/144)
+Courtesy of the issue: [#144](/../../issues/144)
 
-if for some reason this site is not reachable from your country please try running it directly from github
+If this site is not reachable from your country, please try running it directly from GitHub.
+```ps1
+irm "https://github.com/ChrisTitusTech/winutil/releases/latest/download/winutil.ps1" | iex
+```
 
-```
-irm https://raw.githubusercontent.com/ChrisTitusTech/winutil/main/winutil.ps1 | iex
-```
+If you still have Issues, refer to [Known Issues](https://github.com/ChrisTitusTech/winutil/blob/main/KnownIssues.md).
+
 
 #### Automation
 
-Some features are avaliable through automation. This allows you to save your config file pass it to Winutil walk away and come back to a finished system. Here is how you can set it up currently with Winutil >24.01.15
+Some features are available through automation. This allows you to save your config file pass it to Winutil walk away and come back to a finished system. Here is how you can set it up currently with Winutil >24.01.15
 
 1. On the Install Tab, click "Get Installed", this will get all installed apps **supported by Winutil** on the system
   ![GetInstalled](/wiki/Get-Installed.png)
@@ -49,27 +51,12 @@ Some features are avaliable through automation. This allows you to save your con
 4. Use Microwin tab to create a custom Windows image.
 5. Install the Windows image.
 6. In the new Windows, Open PowerShell in the admin mode and run command to automatically apply tweaks and install apps from the config file.
-```
-irm https://christitus.com/win -Config [path-to-your-config] -Run | iex
+```ps1
+iex "& { $(irm christitus.com/win) } -Config [path-to-your-config] -Run"
 ```
 7. Have a cup of coffee! Come back when it's done.
 
 
-## Issues:
-
-- If you are unable to resolve christitus.com/win and are getting  errors launching the tool, it might be due to India blocking GitHub's content domain and preventing downloads. You may use a VPN or change your DNS provider to Google/Cloudflare/etc.
-
-Source: <https://timesofindia.indiatimes.com/gadgets-news/github-content-domain-blocked-for-these-indian-users-reports/articleshow/96687992.cms>
-
-- Windows Security (formerly Defender) and other anti-virus software are known to block the script. The script gets flagged due to the fact that it requires administrator privileges & makes drastic system changes.
-
-- If you are having TLS 1.2 issues, or are having trouble resolving `christitus.com/win` then run with the following command:
-
-```
-[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12;iex(New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/ChrisTitusTech/winutil/main/winutil.ps1')
-```
-
-If you are still having issues try changing your DNS provider to 1.1.1.1 || 1.0.0.1 or 8.8.8.8 || 8.8.4.4
 
 ## Support
 - To morally and mentally support the project, make sure to leave a ⭐️!
@@ -83,21 +70,23 @@ If you are still having issues try changing your DNS provider to 1.1.1.1 || 1.0.
 
 - Install
   - Install Selection: Organize programs by category and facilitate installation by enabling users to select programs and initiate the installation process with a single click.
-  
-  - Upgrade All: Upgrade all existing programs to their latest versions, ensuring users have the most up-to-date and feature-rich software. 
-  
+
+  - Upgrade All: Upgrade all existing programs to their latest versions, ensuring users have the most up-to-date and feature-rich software.
+
   - Uninstall Selection: Effortlessly uninstall selected programs, providing users with a streamlined way to remove unwanted software from their system.
-  
+
   - Get Installed: Retrieve a comprehensive list of installed programs on the system, offering users visibility into the software currently installed on their computer.
-  
+
   - Import / Export: Enable users to import or export the selection list of programs, allowing them to save their preferred program configurations or share them with others. This feature promotes convenience and flexibility in managing program selections across different systems.
- 
+
 - Tweaks
   - Recommended Selection: Provides pre-defined templates tailored for desktop, laptop, and minimal configurations, allowing users to select recommended settings and optimizations specific to their system type.
 
   - Essential Tweaks: Offers a collection of essential tweaks aimed at improving system performance, privacy, and resource utilization. These tweaks include creating a system restore point, disabling telemetry, Wi-Fi Sense, setting services to manual, disabling location tracking, and HomeGroup, among others.
 
-  - Misc. Tweaks: Encompasses a range of various tweaks to further optimize the system. These tweaks include enabling/disabling power throttling, enabling num lock on startup, removing Cortana and Edge, disabling User Account Control (UAC), notification panel, and configuring TPM during updates, among others.
+  - Advanced Tweaks: Encompasses a range of various advanced power user tweaks to further optimize the system. These tweaks include removing OneDrive and Edge, disabling User Account Control (UAC), notification panel, among others.
+
+  - Toggles: Adds easy to use, one click shortcuts for toggling dark mode, NumLock on startup, file extensions, sticky keys, among others.
 
   - Additional Tweaks: Introduces various other tweaks such as enabling dark mode, changing DNS settings, adding an Ultimate Performance mode, and creating shortcuts for WinUtil tools. These tweaks provide users with additional customization options to tailor their system to their preferences.
 
@@ -111,7 +100,7 @@ If you are still having issues try changing your DNS provider to 1.1.1.1 || 1.0.
 
 - Updates:
   - Default (Out of Box) Settings: Provides the default settings that come with Windows for updates.
-  
+
   - Security (Recommended) Settings: Offers recommended settings, including a slight delay of feature updates by 2 years and installation of security updates 4 days after release.
 
   - Disable All Updates (Not Recommended!): Allows users to disable all Windows updates, but it's not recommended due to potential security risks.
@@ -119,19 +108,9 @@ If you are still having issues try changing your DNS provider to 1.1.1.1 || 1.0.
 
 Video and Written Article walkthrough @ <https://christitus.com/windows-tool/>
 
-## Issues
+## Contributing Guidelines
 
-If you encounter any challenges or problems with the script, I kindly request that you submit them via the "Issues" tab on the GitHub repository. By filling out the provided template, you can provide specific details about the issue, allowing me to promptly address any bugs or consider feature requests.
-
-## Contribute Code
-
-To contribute new code, please ensure that it is submitted to the **TEST BRANCH**. Please note that merges will not be performed directly on the MAIN branch.
-
-When creating pull requests, it is essential to thoroughly document all changes made. This includes documenting any additions made to the tweaks section and ensuring that corresponding undo measures are in place to remove the newly added tweaks if necessary. Failure to adhere to this format may result in denial of the pull request. Additionally, comprehensive documentation is required for all code changes. Any code lacking sufficient documentation may also be denied.
-
-By following these guidelines, we can maintain a high standard of quality and ensure that the codebase remains organized and well-documented.
-
-NOTE: When creating a function please include "WPF" or "WinUtil" in the name so that it can be loaded into the runspace.
+If you encounter any challenges or problems with the script, or want to contribute code to the project, please consider reading through our [Contributing Guidelines](./CONTRIBUTING.md)
 
 ## Thanks to all Contributors
 Thanks a lot for spending your time helping Winutil grow. Thanks a lot! Keep rocking 🍻.

@@ -44,21 +44,16 @@ $sync.version = "#{replaceme}"
 $sync.configs = @{}
 $sync.ProcessRunning = $false
 
-$currentPid = [System.Security.Principal.WindowsIdentity]::GetCurrent()
-$principal = new-object System.Security.Principal.WindowsPrincipal($currentPid)
-$adminRole=[System.Security.Principal.WindowsBuiltInRole]::Administrator
-
-
-if ($principal.IsInRole($adminRole))
+# If script isn't running as admin, show error message and quit
+If (([Security.Principal.WindowsIdentity]::GetCurrent()).Owner.Value -ne "S-1-5-32-544")
 {
-    $Host.UI.RawUI.WindowTitle = $myInvocation.MyCommand.Definition + "(Admin)"
-    clear-host
-}
-else
-{
-    $newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell";
-    $newProcess.Arguments = $myInvocation.MyCommand.Definition;
-    $newProcess.Verb = "runas";
-    [System.Diagnostics.Process]::Start($newProcess);
+    Write-Host "===========================================" -Foregroundcolor Red
+    Write-Host "-- Scripts must be run as Administrator ---" -Foregroundcolor Red
+    Write-Host "-- Right-Click Start -> Terminal(Admin) ---" -Foregroundcolor Red
+    Write-Host "===========================================" -Foregroundcolor Red
     break
 }
+
+# Set PowerShell window title
+$Host.UI.RawUI.WindowTitle = $myInvocation.MyCommand.Definition + "(Admin)"
+clear-host

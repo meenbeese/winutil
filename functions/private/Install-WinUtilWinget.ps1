@@ -1,88 +1,66 @@
-function Get-LatestHash {
-    $shaUrl = ((Invoke-WebRequest $apiLatestUrl -UseBasicParsing | ConvertFrom-Json).assets | Where-Object { $_.name -match '^Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.txt$' }).browser_download_url
-
-    $shaFile = Join-Path -Path $tempFolder -ChildPath 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.txt'
-    $WebClient.DownloadFile($shaUrl, $shaFile)
-
-    Get-Content $shaFile
-}
-
 function Install-WinUtilWinget {
-
     <#
 
     .SYNOPSIS
-        Installs Winget if it is not already installed
+        Installs Winget if it is not already installed.
 
     .DESCRIPTION
-        This function will download the latest version of winget and install it. If winget is already installed, it will do nothing.
+        This function will download the latest version of Winget and install it. If Winget is already installed, it will do nothing.
     #>
-    Try{
-        Write-Host "Checking if Winget is Installed..."
-        if (Test-WinUtilPackageManager -winget) {
-            # Checks if winget executable exists and if the Windows Version is 1809 or higher
-            Write-Host "Winget Already Installed"
-            Start-Process -Verb runas -FilePath powershell.exe -ArgumentList "winget settings --enable InstallerHashOverride" -Wait -NoNewWindow
+    $isWingetInstalled = Test-WinUtilPackageManager -winget
+
+    Try {
+        if ($isWingetInstalled -eq "installed") {
+            Write-Host "`nWinget is already installed.`r" -ForegroundColor Green
             return
+        } elseif ($isWingetInstalled -eq "outdated") {
+            Write-Host "`nWinget is Outdated. Continuing with install.`r" -ForegroundColor Yellow
+        } else {
+            Write-Host "`nWinget is not Installed. Continuing with install.`r" -ForegroundColor Red
         }
 
         # Gets the computer's information
         if ($null -eq $sync.ComputerInfo){
             $ComputerInfo = Get-ComputerInfo -ErrorAction Stop
-        }
-        Else {
+        } else {
             $ComputerInfo = $sync.ComputerInfo
         }
 
         if (($ComputerInfo.WindowsVersion) -lt "1809") {
-            # Checks if Windows Version is too old for winget
-            Write-Host "Winget is not supported on this version of Windows (Pre-1809)"
+            # Checks if Windows Version is too old for Winget
+            Write-Host "Winget is not supported on this version of Windows (Pre-1809)" -ForegroundColor Red
             return
         }
 
-        Write-Host "Running Alternative Installers and Direct Installing"
-        Write-Host "- Attempting first install method..."
-        
-        $wingetURL = "https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
-        $wingetFileName = Split-Path $wingetURL -Leaf
-        $wingetInstallerPath = Join-Path $env:TEMP $wingetFileName
-        
-        Invoke-WebRequest -Uri $wingetURL -OutFile $wingetInstallerPath
-        Add-AppxPackage -Path $wingetInstallerPath
-        if (Test-WinUtilPackageManager -winget) {
-            # Checks if winget executable exists and if the Windows Version is 1809 or higher
-            Write-Host "Winget Installed via GitHub"
-            return
-        } else {
-            Write-Host "- Failed to install Winget via GitHub"
+        # Install Winget via GitHub method.
+        # Used part of my own script with some modification: ruxunderscore/windows-initialization
+        Write-Host "Downloading Winget Prerequsites`n"
+        Get-WinUtilWingetPrerequisites
+        Write-Host "Downloading Winget and License File`r"
+        Get-WinUtilWingetLatest
+        Write-Host "Installing Winget w/ Prerequsites`r"
+        Add-AppxProvisionedPackage -Online -PackagePath $ENV:TEMP\Microsoft.DesktopAppInstaller.msixbundle -DependencyPackagePath $ENV:TEMP\Microsoft.VCLibs.x64.Desktop.appx, $ENV:TEMP\Microsoft.UI.Xaml.x64.appx -LicensePath $ENV:TEMP\License1.xml
+		Write-Host "Manually adding Winget Sources, from Winget CDN."
+		Add-AppxPackage -Path https://cdn.winget.microsoft.com/cache/source.msix #Seems some installs of Winget don't add the repo source, this should makes sure that it's installed every time.
+        Write-Host "Winget Installed" -ForegroundColor Green
+        Write-Host "Enabling NuGet and Module..."
+        Install-PackageProvider -Name NuGet -Force
+        Install-Module -Name Microsoft.WinGet.Client -Force
+        # Winget only needs a refresh of the environment variables to be used.
+        Write-Output "Refreshing Environment Variables...`n"
+        $ENV:PATH = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+    } Catch {
+        Write-Host "Failure detected while installing via GitHub method. Continuing with Chocolatey method as fallback." -ForegroundColor Red
+        # In case install fails via GitHub method.
+        Try {
+        # Install Choco if not already present
+        Install-WinUtilChoco
+        Start-Process -Verb runas -FilePath powershell.exe -ArgumentList "choco install winget-cli"
+        Write-Host "Winget Installed" -ForegroundColor Green
+        Write-Output "Refreshing Environment Variables...`n"
+        $ENV:PATH = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+        } Catch {
+            throw [WingetFailedInstall]::new('Failed to install!')
         }
-        # Second Method
-        Write-Host "- Attempting second install method..."
-        
-        Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
-        Install-Script -Name winget-install -Force
-        $wingetArgument = "-ExecutionPolicy Bypass winget-install.ps1"
-        Start-Process powershell -ArgumentList $wingetArgument -Wait
-        if (Test-WinUtilPackageManager -winget) {
-            # Checks if winget executable exists and if the Windows Version is 1809 or higher
-            Write-Host "Winget Installed via PowerShell Gallery Script"
-            return
-        } else {
-            Write-Host "- Failed to install Winget via PowerShell Gallery Script"
-        }
-        # Third Method
-        Write-Host "- Attempting third install method..."
-        
-        Start-Process -Verb runas -FilePath powershell.exe -ArgumentList "choco install winget --force" -Wait -NoNewWindow
-        if (Test-WinUtilPackageManager -winget) {
-            # Checks if winget executable exists and if the Windows Version is 1809 or higher
-            Write-Host "Winget Installed via Chocolatey"
-            return
-        } else {
-            Write-Host "- Failed to install Winget via Chocolatey"
-        }
-    }
-    Catch{
-        throw [WingetFailedInstall]::new('Failed to install')
     }
 }

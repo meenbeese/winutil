@@ -2,10 +2,10 @@ function Show-CustomDialog {
     <#
     .SYNOPSIS
     Displays a custom dialog box with an image, heading, message, and an OK button.
-    
+
     .DESCRIPTION
     This function creates a custom dialog box with the specified message and additional elements such as an image, heading, and an OK button. The dialog box is designed with a green border, rounded corners, and a black background.
-    
+
     .PARAMETER Message
     The message to be displayed in the dialog box.
 
@@ -14,15 +14,27 @@ function Show-CustomDialog {
 
     .PARAMETER Height
     The height of the custom dialog window.
-    
+
+    .PARAMETER FontSize
+    The Font Size for text shown inside the custom dialog window.
+
+    .PARAMETER HeaderFontSize
+    The Font Size for the Header of the custom dialog window.
+
+    .PARAMETER IconSize
+    The Size to use for Icon inside the custom dialog window.
+
     .EXAMPLE
     Show-CustomDialog -Message "This is a custom dialog with a message and an image above." -Width 300 -Height 200
-    
+
     #>
     param(
         [string]$Message,
         [int]$Width = 300,
-        [int]$Height = 200
+        [int]$Height = 200,
+        [int]$FontSize = 10,
+        [int]$HeaderFontSize = 14,
+        [int]$IconSize = 25
     )
 
     Add-Type -AssemblyName PresentationFramework
@@ -48,6 +60,7 @@ function Show-CustomDialog {
     $dialog.Foreground = $foregroundColor
     $dialog.Background = $backgroundColor
     $dialog.FontFamily = $font
+    $dialog.FontSize = $FontSize
 
     # Create a Border for the green edge with rounded corners
     $border = New-Object Windows.Controls.Border
@@ -99,7 +112,7 @@ function Show-CustomDialog {
     $grid.RowDefinitions.Add($row0)
     $grid.RowDefinitions.Add($row1)
     $grid.RowDefinitions.Add($row2)
-        
+
     # Add StackPanel for horizontal layout with margins
     $stackPanel = New-Object Windows.Controls.StackPanel
     $stackPanel.Margin = New-Object Windows.Thickness(10)  # Add margins around the stack panel
@@ -111,9 +124,9 @@ function Show-CustomDialog {
     [Windows.Controls.Grid]::SetRow($stackPanel, 0)  # Set the row to the second row (0-based index)
 
     $viewbox = New-Object Windows.Controls.Viewbox
-    $viewbox.Width = 25
-    $viewbox.Height = 25
-    
+    $viewbox.Width = $IconSize
+    $viewbox.Height = $IconSize
+
     # Combine the paths into a single string
 #     $cttLogoPath = @"
 #     M174 1094 c-4 -14 -4 -55 -2 -92 3 -57 9 -75 41 -122 41 -60 45 -75 22 -84 -25 -9 -17 -21 30 -44 l45 -22 0 -103 c0 -91 3 -109 26 -155 30 -60 65 -87 204 -157 l95 -48 110 58 c184 96 205 127 205 293 l0 108 45 22 c47 23 55 36 30 46 -22 8 -18 30 9 63 13 16 34 48 46 71 20 37 21 52 15 116 l-6 73 -69 -23 c-38 -12 -137 -59 -220 -103 -82 -45 -160 -81 -171 -81 -12 0 -47 15 -78 34 -85 51 -239 127 -309 151 l-62 22 -6 -23z m500 -689 c20 -8 36 -19 36 -24 0 -18 -53 -51 -80 -51 -28 0 -80 33 -80 51 0 10 55 38 76 39 6 0 28 -7 48 -15z
@@ -159,7 +172,7 @@ $cttLogoPath = @"
              46.21,102.83 36.63,98.57 31.04,93.68
              16.88,81.28 19.00,62.88 19.00,46.00 Z
 "@
-    
+
     # Add SVG path
     $svgPath = New-Object Windows.Shapes.Path
     $svgPath.Data = [Windows.Media.Geometry]::Parse($cttLogoPath)
@@ -167,31 +180,82 @@ $cttLogoPath = @"
 
     # Add SVG path to Viewbox
     $viewbox.Child = $svgPath
-    
+
     # Add SVG path to the stack panel
     $stackPanel.Children.Add($viewbox)
 
     # Add "Winutil" text
     $winutilTextBlock = New-Object Windows.Controls.TextBlock
     $winutilTextBlock.Text = "Winutil"
-    $winutilTextBlock.FontSize = 18  # Adjust font size as needed
+    $winutilTextBlock.FontSize = $HeaderFontSize
     $winutilTextBlock.Foreground = $foregroundColor
     $winutilTextBlock.Margin = New-Object Windows.Thickness(10, 5, 10, 5)  # Add margins around the text block
     $stackPanel.Children.Add($winutilTextBlock)
-
     # Add TextBlock for information with text wrapping and margins
     $messageTextBlock = New-Object Windows.Controls.TextBlock
-    $messageTextBlock.Text = $Message
     $messageTextBlock.TextWrapping = [Windows.TextWrapping]::Wrap  # Enable text wrapping
     $messageTextBlock.HorizontalAlignment = [Windows.HorizontalAlignment]::Left
     $messageTextBlock.VerticalAlignment = [Windows.VerticalAlignment]::Top
     $messageTextBlock.Margin = New-Object Windows.Thickness(10)  # Add margins around the text block
+
+    # Define the Regex to find hyperlinks formatted as HTML <a> tags
+    $regex = [regex]::new('<a href="([^"]+)">([^<]+)</a>')
+    $lastPos = 0
+
+    # Iterate through each match and add regular text and hyperlinks
+    foreach ($match in $regex.Matches($Message)) {
+        # Add the text before the hyperlink, if any
+        $textBefore = $Message.Substring($lastPos, $match.Index - $lastPos)
+        if ($textBefore.Length -gt 0) {
+            $messageTextBlock.Inlines.Add((New-Object Windows.Documents.Run($textBefore)))
+        }
+
+        # Create and add the hyperlink
+        $hyperlink = New-Object Windows.Documents.Hyperlink
+        $hyperlink.NavigateUri = New-Object System.Uri($match.Groups[1].Value)
+        $hyperlink.Inlines.Add($match.Groups[2].Value)
+        $hyperlink.TextDecorations = [Windows.TextDecorations]::None  # Remove underline
+        $hyperlink.Foreground = $foregroundColor
+        $hyperlink.Add_Click({
+            param($sender, $args)
+            Start-Process $sender.NavigateUri.AbsoluteUri
+        })
+        $hyperlink.Add_MouseEnter({
+            param($sender, $args)
+            $sender.Foreground = [Windows.Media.Brushes]::LightGray
+        })
+        $hyperlink.Add_MouseLeave({
+            param($sender, $args)
+            $sender.Foreground = $foregroundColor
+        })
+
+        $messageTextBlock.Inlines.Add($hyperlink)
+
+        # Update the last position
+        $lastPos = $match.Index + $match.Length
+    }
+
+    # Add any remaining text after the last hyperlink
+    if ($lastPos -lt $Message.Length) {
+        $textAfter = $Message.Substring($lastPos)
+        $messageTextBlock.Inlines.Add((New-Object Windows.Documents.Run($textAfter)))
+    }
+
+    # If no matches, add the entire message as a run
+    if ($regex.Matches($Message).Count -eq 0) {
+        $messageTextBlock.Inlines.Add((New-Object Windows.Documents.Run($Message)))
+    }
+
+
+    # Add the TextBlock to the Grid
     $grid.Children.Add($messageTextBlock)
     [Windows.Controls.Grid]::SetRow($messageTextBlock, 1)  # Set the row to the second row (0-based index)
+
 
     # Add OK button
     $okButton = New-Object Windows.Controls.Button
     $okButton.Content = "OK"
+    $okButton.FontSize = $FontSize
     $okButton.Width = 80
     $okButton.Height = 30
     $okButton.HorizontalAlignment = [Windows.HorizontalAlignment]::Center

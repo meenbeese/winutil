@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Background="{MainBackgroundColor}"
         WindowStartupLocation="CenterScreen"
+        UseLayoutRounding="True"
         WindowStyle="None"
         Title="Chris Titus Tech's Windows Utility" Height="800" Width="1280">
     <WindowChrome.WindowChrome>
@@ -48,6 +49,8 @@
     <Style TargetType="Button" x:Key="HoverButtonStyle">
         <Setter Property="Foreground" Value="{MainForegroundColor}" />
         <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="FontSize" Value="{ButtonFontSize}" />
+        <Setter Property="TextElement.FontFamily" Value="{ButtonFontFamily}"/>
         <Setter Property="Background" Value="{MainBackgroundColor}" />
         <Setter Property="Template">
             <Setter.Value>
@@ -143,7 +146,7 @@
                                 <TextBlock Text="{TemplateBinding SelectionBoxItem}"
                                            Foreground="{TemplateBinding Foreground}"
                                            Background="Transparent"
-                                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2"
                                            />
                             </ToggleButton>
                             <Popup x:Name="Popup"
@@ -174,6 +177,7 @@
 
         <!-- TextBlock template -->
         <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{FontSize}"/>
             <Setter Property="Foreground" Value="{LabelboxForegroundColor}"/>
             <Setter Property="Background" Value="{LabelBackgroundColor}"/>
         </Style>
@@ -185,7 +189,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
                         <Grid>
-                            <Border x:Name="ButtonGlow" 
+                            <Border x:Name="ButtonGlow"
                                         Background="{TemplateBinding Background}"
                                         BorderBrush="{ButtonForegroundColor}"
                                         BorderThickness="{ButtonBorderThickness}"
@@ -196,7 +200,9 @@
                                         BorderBrush="{ButtonBackgroundColor}"
                                         BorderThickness="{ButtonBorderThickness}"
                                         CornerRadius="{ButtonCornerRadius}">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                        <ContentPresenter
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
                                             Margin="10,2,10,2"/>
                                     </Border>
                                 </Grid>
@@ -236,7 +242,9 @@
             <Setter Property="Margin" Value="{ButtonMargin}"/>
             <Setter Property="Foreground" Value="{ButtonForegroundColor}"/>
             <Setter Property="Background" Value="{ButtonBackgroundColor}"/>
-            <Setter Property="Height" Value="{ToggleButtonHeight}"/>
+            <Setter Property="Height" Value="{ButtonHeight}"/>
+            <Setter Property="Width" Value="{ButtonWidth}"/>
+            <Setter Property="FontSize" Value="{ButtonFontSize}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -265,12 +273,12 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="ClearButtonStyle" TargetType="Button">
+        <Style x:Key="SearchBarClearButtonStyle" TargetType="Button">
             <Setter Property="FontFamily" Value="Arial"/>
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontSize" Value="{SearchBarClearButtonFontSize}"/>
             <Setter Property="Content" Value="X"/>
-            <Setter Property="Height" Value="14"/>
-            <Setter Property="Width" Value="14"/>
+            <Setter Property="Height" Value="{SearchBarClearButtonFontSize}"/>
+            <Setter Property="Width" Value="{SearchBarClearButtonFontSize}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{MainForegroundColor}"/>
             <Setter Property="Padding" Value="0"/>
@@ -289,22 +297,22 @@
         <Style TargetType="CheckBox">
             <Setter Property="Foreground" Value="{MainForegroundColor}"/>
             <Setter Property="Background" Value="{MainBackgroundColor}"/>
-            <!-- <Setter Property="FontSize" Value="15" /> -->
-            <!-- <Setter Property="TextElement.FontFamily" Value="Consolas, sans-serif"/> -->
-             <Setter Property="Template">
+            <Setter Property="FontSize" Value="{FontSize}" />
+            <Setter Property="TextElement.FontFamily" Value="{FontFamily}"/>
+            <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="CheckBox">
-                        <Grid Background="{TemplateBinding Background}">
+                        <Grid Background="{TemplateBinding Background}" Margin="{CheckBoxMargin}">
                             <BulletDecorator Background="Transparent">
                                 <BulletDecorator.Bullet>
-                                    <Grid Width="16" Height="16">
+                                    <Grid Width="{CheckBoxBulletDecoratorFontSize}" Height="{CheckBoxBulletDecoratorFontSize}">
                                         <Border x:Name="Border"
                                                 BorderBrush="{TemplateBinding BorderBrush}"
                                                 Background="{ButtonBackgroundColor}"
                                                 BorderThickness="1"
-                                                Width="14"
-                                                Height="14"
-                                                Margin="1"
+                                                Width="{Binding Path={CheckBoxBulletDecoratorFontSize}-2}"
+                                                Height="{Binding Path={CheckBoxBulletDecoratorFontSize}-2}"
+                                                Margin="2"
                                                 SnapsToDevicePixels="True"/>
                                         <Path x:Name="CheckMark"
                                               Stroke="{TemplateBinding Foreground}"
@@ -402,86 +410,80 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
         <Style x:Key="ColorfulToggleSwitchStyle" TargetType="{x:Type CheckBox}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
                         <Grid x:Name="toggleSwitch">
-                            <Border x:Name="Border" CornerRadius="10"
-                                    Background="#FFFFFFFF"
-                                    Width="70" Height="25">
-                                <Border.Effect>
-                                    <DropShadowEffect ShadowDepth="0.5" Direction="0" Opacity="0.3" />
-                                </Border.Effect>
-                                <Ellipse x:Name="Ellipse" Fill="#FFFFFFFF" Stretch="Uniform"
-                                        Margin="2 2 2 1"
-                                        Stroke="Gray" StrokeThickness="0.2"
-                                        HorizontalAlignment="Left" Width="22">
-                                    <Ellipse.Effect>
-                                        <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.3" Direction="260" />
-                                    </Ellipse.Effect>
-                                </Ellipse>
-                            </Border>
 
-                            <TextBlock x:Name="txtDisable" Text="Disable " VerticalAlignment="Center" FontWeight="DemiBold" HorizontalAlignment="Right" Foreground="White" FontSize="12" />
-                            <TextBlock x:Name="txtEnable" Text="  Enable" VerticalAlignment="Center" FontWeight="DemiBold" Foreground="White" HorizontalAlignment="Left" FontSize="12" />
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="1" x:Name="Border" CornerRadius="8"
+                                BorderThickness="1"
+                                Width="34" Height="17">
+                            <Ellipse x:Name="Ellipse" Fill="{MainForegroundColor}" Stretch="Uniform"
+                                    Margin="2,2,2,1"
+                                    HorizontalAlignment="Left" Width="12">
+                            </Ellipse>
+                        </Border>
                         </Grid>
 
                         <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{MainForegroundColor}" />
+                                <Setter TargetName="Border" Property="Background" Value="{LinkHoverForegroundColor}"/>
+                                <Setter Property="Cursor" Value="Hand" />
+                                <Setter Property="Panel.ZIndex" Value="1000"/>
+                            </Trigger>
                             <Trigger Property="ToggleButton.IsChecked" Value="False">
-                                <Setter TargetName="Border" Property="Background" Value="#C2283B" />
-                                <Setter TargetName="Ellipse" Property="Margin" Value="2 2 2 1" />
-                                <Setter TargetName="txtDisable" Property="Opacity" Value="1.0" />
-                                <Setter TargetName="txtEnable" Property="Opacity" Value="0.0" />
+                                <Setter TargetName="Border" Property="Background" Value="{MainBackgroundColor}" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{MainForegroundColor}" />
+                                <Setter TargetName="Ellipse" Property="Fill" Value="{MainForegroundColor}" />
+
                             </Trigger>
 
                             <Trigger Property="ToggleButton.IsChecked" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="{MainBackgroundColor}" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{MainForegroundColor}" />
+                                <Setter TargetName="Ellipse" Property="Fill" Value="{MainForegroundColor}" />
+
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <ColorAnimation Storyboard.TargetName="Border"
                                                     Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                    To="#34A543" Duration="0:0:0.1" />
+                                                    To="{ToggleButtonOnColor}" Duration="0:0:0.1" />
+                                            <ColorAnimation Storyboard.TargetName="Border"
+                                                    Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                                    To="{ToggleButtonOnColor}" Duration="0:0:0.1" />
 
+                                            <ColorAnimation Storyboard.TargetName="Ellipse"
+                                                    Storyboard.TargetProperty="(Fill).(SolidColorBrush.Color)"
+                                                    To="White" Duration="0:0:0.1" />
                                             <ThicknessAnimation Storyboard.TargetName="Ellipse"
                                                     Storyboard.TargetProperty="Margin"
-                                                    To="46 2 2 1" Duration="0:0:0.1" />
-
-                                            <DoubleAnimation Storyboard.TargetName="txtDisable"
-                                                    Storyboard.TargetProperty="(TextBlock.Opacity)"
-                                                    To="0.0" Duration="0:0:0:0.1" />
-
-                                            <DoubleAnimation Storyboard.TargetName="txtEnable"
-                                                    Storyboard.TargetProperty="(TextBlock.Opacity)"
-                                                    To="1.0" Duration="0:0:0:0.1" />
+                                                    To="18,2,2,2" Duration="0:0:0.1" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.EnterActions>
-
-                                <!-- Some out fading -->
                                 <Trigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <ColorAnimation Storyboard.TargetName="Border"
                                                     Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                    To="#C2283B" Duration="0:0:0.1" />
+                                                    To="{MainBackgroundColor}" Duration="0:0:0.1" />
 
                                             <ThicknessAnimation Storyboard.TargetName="Ellipse"
                                                     Storyboard.TargetProperty="Margin"
-                                                    To="2 2 2 1" Duration="0:0:0.1" />
+                                                    To="2,2,2,1" Duration="0:0:0.1" />
 
-                                            <DoubleAnimation Storyboard.TargetName="txtDisable"
-                                                    Storyboard.TargetProperty="(TextBlock.Opacity)"
-                                                    To="1.0" Duration="0:0:0:0.1" />
-
-                                            <DoubleAnimation Storyboard.TargetName="txtEnable"
-                                                    Storyboard.TargetProperty="(TextBlock.Opacity)"
-                                                    To="0.0" Duration="0:0:0:0.1" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.ExitActions>
-
-                                <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -489,6 +491,7 @@
             </Setter>
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
+
         <Style x:Key="labelfortweaks" TargetType="{x:Type Label}">
             <Setter Property="Foreground" Value="{MainForegroundColor}" />
             <Setter Property="Background" Value="{MainBackgroundColor}" />
@@ -538,6 +541,7 @@
             <Setter Property="BorderBrush" Value="{MainForegroundColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Foreground" Value="{MainForegroundColor}"/>
+            <Setter Property="FontSize" Value="{FontSize}"/>
             <Setter Property="Padding" Value="5"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -545,9 +549,9 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
-                        <Border Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}" 
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="5">
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost" />
@@ -562,54 +566,66 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="ScrollVisibilityRectangle" TargetType="Rectangle">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=ComputedHorizontalScrollBarVisibility, ElementName=scrollViewer}" Value="Visible"/>
+                        <Condition Binding="{Binding Path=ComputedVerticalScrollBarVisibility, ElementName=scrollViewer}" Value="Visible"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Visible"/>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid Background="{MainBackgroundColor}" ShowGridLines="False" Name="WPFMainGrid" Width="Auto" Height="Auto" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition Height="50px"/>
+            <RowDefinition Height="{TabRowHeightInPixels}px"/>
             <RowDefinition Height=".9*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <DockPanel HorizontalAlignment="Stretch" Background="{MainBackgroundColor}" SnapsToDevicePixels="True" Grid.Row="0" Width="Auto">
-            <Image Height="{ToggleButtonHeight}" Width="{ToggleButtonHeight}" Name="WPFIcon" 
+            <Image Height="{WinUtilIconSize}" Width="{WinUtilIconSize}" Name="WPFIcon"
                 SnapsToDevicePixels="True" Source="https://christitus.com/images/logo-full.png" Margin="10"/>
-            <ToggleButton HorizontalAlignment="Left" Height="{ToggleButtonHeight}" Width="100"
+            <ToggleButton HorizontalAlignment="Left" Height="{TabButtonHeight}" Width="{TabButtonWidth}"
                 Background="{ButtonInstallBackgroundColor}" Foreground="white" FontWeight="Bold" Name="WPFTab1BT">
                 <ToggleButton.Content>
-                    <TextBlock Background="Transparent" Foreground="{ButtonInstallForegroundColor}" >
+                    <TextBlock FontSize="{TabButtonFontSize}" Background="Transparent" Foreground="{ButtonInstallForegroundColor}" >
                         <Underline>I</Underline>nstall
                     </TextBlock>
                 </ToggleButton.Content>
             </ToggleButton>
-            <ToggleButton HorizontalAlignment="Left" Height="{ToggleButtonHeight}" Width="100"
+            <ToggleButton HorizontalAlignment="Left" Height="{TabButtonHeight}" Width="{TabButtonWidth}"
                 Background="{ButtonTweaksBackgroundColor}" Foreground="{ButtonTweaksForegroundColor}" FontWeight="Bold" Name="WPFTab2BT">
                 <ToggleButton.Content>
-                    <TextBlock Background="Transparent" Foreground="{ButtonTweaksForegroundColor}">
+                    <TextBlock FontSize="{TabButtonFontSize}" Background="Transparent" Foreground="{ButtonTweaksForegroundColor}">
                         <Underline>T</Underline>weaks
                     </TextBlock>
                 </ToggleButton.Content>
             </ToggleButton>
-            <ToggleButton HorizontalAlignment="Left" Height="{ToggleButtonHeight}" Width="100"
+            <ToggleButton HorizontalAlignment="Left" Height="{TabButtonHeight}" Width="{TabButtonWidth}"
                 Background="{ButtonConfigBackgroundColor}" Foreground="{ButtonConfigForegroundColor}" FontWeight="Bold" Name="WPFTab3BT">
                 <ToggleButton.Content>
-                    <TextBlock Background="Transparent" Foreground="{ButtonConfigForegroundColor}">
+                    <TextBlock FontSize="{TabButtonFontSize}" Background="Transparent" Foreground="{ButtonConfigForegroundColor}">
                         <Underline>C</Underline>onfig
                     </TextBlock>
                 </ToggleButton.Content>
             </ToggleButton>
-            <ToggleButton HorizontalAlignment="Left" Height="{ToggleButtonHeight}" Width="100"
+            <ToggleButton HorizontalAlignment="Left" Height="{TabButtonHeight}" Width="{TabButtonWidth}"
                 Background="{ButtonUpdatesBackgroundColor}" Foreground="{ButtonUpdatesForegroundColor}" FontWeight="Bold" Name="WPFTab4BT">
                 <ToggleButton.Content>
-                    <TextBlock Background="Transparent" Foreground="{ButtonUpdatesForegroundColor}">
+                    <TextBlock FontSize="{TabButtonFontSize}" Background="Transparent" Foreground="{ButtonUpdatesForegroundColor}">
                         <Underline>U</Underline>pdates
                     </TextBlock>
                 </ToggleButton.Content>
             </ToggleButton>
-            <ToggleButton HorizontalAlignment="Left" Height="{ToggleButtonHeight}" Width="100"
+            <ToggleButton HorizontalAlignment="Left" Height="{TabButtonHeight}" Width="{TabButtonWidth}"
                 Background="{ButtonUpdatesBackgroundColor}" Foreground="{ButtonUpdatesForegroundColor}" FontWeight="Bold" Name="WPFTab5BT">
                 <ToggleButton.Content>
-                    <TextBlock Background="Transparent" Foreground="{ButtonUpdatesForegroundColor}">
+                    <TextBlock FontSize="{TabButtonFontSize}" Background="Transparent" Foreground="{ButtonUpdatesForegroundColor}">
                         <Underline>M</Underline>icroWin
                     </TextBlock>
                 </ToggleButton.Content>
@@ -620,89 +636,109 @@
                     <ColumnDefinition Width="50px"/>
                     <ColumnDefinition Width="50px"/>
                 </Grid.ColumnDefinitions>
-                
+
+                <!--
+                  TODO:
+                    Make this SearchBar TextBox Position itself and still
+                    house the Magnifying Glass Character in place,
+                    even if that Magnifying Icon changed its Size,
+                    it should be positioned relative to the SearchBar.
+                    Consider using a Math Solver, will help in making
+                    development of these things much easier
+                -->
                 <TextBox
                     Grid.Column="0"
-                    Width="200" 
-                    FontSize="14"
-                    VerticalAlignment="Center" HorizontalAlignment="Left" 
-                    Height="25" Margin="10,0,0,0" BorderThickness="1" Padding="22,2,2,2"
-                    Name="CheckboxFilter"
+                    Width="{SearchBarWidth}"
+                    Height="{SearchBarHeight}"
+                    FontSize="{SearchBarTextBoxFontSize}"
+                    VerticalAlignment="Center" HorizontalAlignment="Left"
+                    Margin="10,0,0,0" BorderThickness="1" Padding="22,2,2,2"
+                    Name="SearchBar"
                     Foreground="{MainForegroundColor}" Background="{MainBackgroundColor}"
                     ToolTip="Press Ctrl-F and type app name to filter application list below. Press Esc to reset the filter">
                 </TextBox>
-                <TextBlock 
+                <TextBlock
                     Grid.Column="0"
-                    VerticalAlignment="Center" HorizontalAlignment="Left" 
-                    FontFamily="Segoe MDL2 Assets" 
-                    FontSize="14" Margin="16,0,0,0">&#xE721;</TextBlock>
-                <Button Grid.Column="0" 
-                    VerticalAlignment="Center" HorizontalAlignment="Left" 
-                    Name="CheckboxFilterClear" 
-                    Style="{StaticResource ClearButtonStyle}" 
+                    VerticalAlignment="Center" HorizontalAlignment="Left"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="{IconFontSize}"
+                    Margin="16,0,0,0">&#xE721;</TextBlock>
+                <!--
+                  TODO:
+                    Make this ClearButton Positioning react to
+                    SearchBar Width Value changing, so it'll look correct.
+                    Consider using a Math Solver, will help in making
+                    development of these things much easier
+                -->
+                <Button Grid.Column="0"
+                    VerticalAlignment="Center" HorizontalAlignment="Left"
+                    Name="SearchBarClearButton"
+                    Style="{StaticResource SearchBarClearButtonStyle}"
                     Margin="193,0,0,0" Visibility="Collapsed"/>
 
                 <Button Name="SettingsButton"
                     Style="{StaticResource HoverButtonStyle}"
-                    Grid.Column="1" BorderBrush="Transparent" 
+                    Grid.Column="1" BorderBrush="Transparent"
                     Background="{MainBackgroundColor}"
                     Foreground="{MainForegroundColor}"
-                    FontSize="18"
-                    Width="35" Height="35" 
-                    HorizontalAlignment="Right" VerticalAlignment="Top" 
-                    Margin="0,5,5,0" 
-                    FontFamily="Segoe MDL2 Assets" 
+                    FontSize="{SettingsIconFontSize}"
+                    Width="{IconButtonSize}" Height="{IconButtonSize}"
+                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                    Margin="0,5,5,0"
+                    FontFamily="Segoe MDL2 Assets"
                     Content="&#xE713;"/>
-                <Popup Grid.Column="1" Name="SettingsPopup" 
+                <Popup Grid.Column="1" Name="SettingsPopup"
                     IsOpen="False"
-                    PlacementTarget="{Binding ElementName=SettingsButton}" Placement="Bottom"  
+                    PlacementTarget="{Binding ElementName=SettingsButton}" Placement="Bottom"
                     HorizontalAlignment="Right" VerticalAlignment="Top">
                     <Border Background="{MainBackgroundColor}" BorderBrush="{MainForegroundColor}" BorderThickness="1" CornerRadius="0" Margin="0">
                         <StackPanel Background="{MainBackgroundColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                            <MenuItem Header="Import" Name="ImportMenuItem" Foreground="{MainForegroundColor}"/>
-                            <MenuItem Header="Export" Name="ExportMenuItem" Foreground="{MainForegroundColor}"/>
+                            <MenuItem FontSize="{ButtonFontSize}" Header="Import" Name="ImportMenuItem" Foreground="{MainForegroundColor}"/>
+                            <MenuItem FontSize="{ButtonFontSize}" Header="Export" Name="ExportMenuItem" Foreground="{MainForegroundColor}"/>
                             <Separator/>
-                            <MenuItem Header="About" Name="AboutMenuItem" Foreground="{MainForegroundColor}"/>
+                            <MenuItem FontSize="{ButtonFontSize}" Header="About" Name="AboutMenuItem" Foreground="{MainForegroundColor}"/>
                         </StackPanel>
                     </Border>
                 </Popup>
- 
-            <Button 
+
+            <Button
                 Grid.Column="2"
-                Content="&#xD7;" BorderThickness="0" 
+                Content="&#xD7;" BorderThickness="0"
                 BorderBrush="Transparent"
                 Background="{MainBackgroundColor}"
-                Width="35" Height="35" 
-                HorizontalAlignment="Right" VerticalAlignment="Top" 
-                Margin="0,5,5,0" 
+                Width="{IconButtonSize}" Height="{IconButtonSize}"
+                HorizontalAlignment="Right" VerticalAlignment="Top"
+                Margin="0,5,5,0"
                 FontFamily="Arial"
-                Foreground="{MainForegroundColor}" FontSize="18" Name="WPFCloseButton" />
+                Foreground="{MainForegroundColor}" FontSize="{IconFontSize}" Name="WPFCloseButton" />
             </Grid>
-           
+
         </DockPanel>
-       
+
         <TabControl Name="WPFTabNav" Background="Transparent" Width="Auto" Height="Auto" BorderBrush="Transparent" BorderThickness="0" Grid.Row="1" Grid.Column="0" Padding="-1">
             <TabItem Header="Install" Visibility="Collapsed" Name="WPFTab1">
                 <Grid Background="Transparent" >
-                   
+
                     <Grid.RowDefinitions>
                         <RowDefinition Height="45px"/>
                         <RowDefinition Height="0.95*"/>
                     </Grid.RowDefinitions>
                     <StackPanel Background="{MainBackgroundColor}" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.ColumnSpan="3" Margin="5">
-                        <Button Name="WPFinstall" Content=" Install Selected" Margin="2" />
+                        <Button Name="WPFinstall" Content=" Install/Upgrade Selected" Margin="2" />
                         <Button Name="WPFInstallUpgrade" Content=" Upgrade All" Margin="2"/>
-                        <Button Name="WPFuninstall" Content=" Uninstall Selection" Margin="2"/>
+                        <Button Name="WPFuninstall" Content=" Uninstall Selected" Margin="2"/>
                         <Button Name="WPFGetInstalled" Content=" Get Installed" Margin="2"/>
                         <Button Name="WPFclearWinget" Content=" Clear Selection" Margin="2"/>
                     </StackPanel>
 
-                    <ScrollViewer Grid.Row="1" Grid.Column="0" Padding="-1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
-                        BorderBrush="Transparent" BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <ScrollViewer x:Name="scrollViewer" Grid.Row="1" Grid.Column="0" Padding="-1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                                BorderBrush="Transparent" BorderThickness="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        {{InstallPanel_applications}}
+                            {{InstallPanel_applications}}
                         </Grid>
                     </ScrollViewer>
+
+                    <Rectangle Grid.Row="1" Grid.Column="0" Width="18" Height="18" Fill="{MainBackgroundColor}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource ScrollVisibilityRectangle}"/>
 
                 </Grid>
             </TabItem>
@@ -710,18 +746,17 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Grid Background="Transparent">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="55"/>
+                        <RowDefinition Height="45px"/>
                         <RowDefinition Height=".70*"/>
                         <RowDefinition Height=".10*"/>
                     </Grid.RowDefinitions>
                     {{InstallPanel_tweaks}}
-                    <StackPanel Background="{MainBackgroundColor}" Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="10">
-                        <Label Content="Recommended Selections:" FontSize="14" VerticalAlignment="Center"/>
-                        <Button Name="WPFdesktop" Content=" Desktop " Margin="1"/>
-                        <Button Name="WPFlaptop" Content=" Laptop " Margin="1"/>
-                        <Button Name="WPFminimal" Content=" Minimal " Margin="1"/>
-                        <Button Name="WPFclear" Content=" Clear " Margin="1"/>
-                        <Button Name="WPFGetInstalledTweaks" Content=" Get Installed " Margin="1"/>
+                    <StackPanel Background="{MainBackgroundColor}" Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">
+                        <Label Content="Recommended Selections:" FontSize="{FontSize}" VerticalAlignment="Center" Margin="2"/>
+                        <Button Name="WPFstandard" Content=" Standard " Margin="2"/>
+                        <Button Name="WPFminimal" Content=" Minimal " Margin="2"/>
+                        <Button Name="WPFclear" Content=" Clear " Margin="2"/>
+                        <Button Name="WPFGetInstalledTweaks" Content=" Get Installed " Margin="2"/>
                     </StackPanel>
                     <Border Grid.ColumnSpan="2" Grid.Row="2" Grid.Column="0">
                         <StackPanel Background="{MainBackgroundColor}" Orientation="Horizontal" HorizontalAlignment="Left">
@@ -752,19 +787,19 @@
                     </Grid.ColumnDefinitions>
                     <Border Grid.Row="0" Grid.Column="0">
                         <StackPanel Background="{MainBackgroundColor}" SnapsToDevicePixels="True">
-                            <Button Name="WPFUpdatesdefault" FontSize="16" Content="Default (Out of Box) Settings" Margin="20,4,20,10" Padding="10"/>
+                            <Button Name="WPFUpdatesdefault" FontSize="{ConfigTabButtonFontSize}" Height="Auto" Width="Auto" Content="Default (Out of Box) Settings" Margin="20,4,20,10" Padding="10"/>
                             <TextBlock Margin="20,0,20,0" Padding="10" TextWrapping="WrapWithOverflow" MaxWidth="300">This is the default settings that come with Windows. <LineBreak/><LineBreak/> No modifications are made and will remove any custom windows update settings.<LineBreak/><LineBreak/>Note: If you still encounter update errors, reset all updates in the config tab. That will restore ALL Microsoft Update Services from their servers and reinstall them to default settings.</TextBlock>
                         </StackPanel>
                     </Border>
                     <Border Grid.Row="0" Grid.Column="1">
                         <StackPanel Background="{MainBackgroundColor}" SnapsToDevicePixels="True">
-                            <Button Name="WPFUpdatessecurity" FontSize="16" Content="Security (Recommended) Settings" Margin="20,4,20,10" Padding="10"/>
+                            <Button Name="WPFUpdatessecurity" FontSize="{ConfigTabButtonFontSize}" Height="Auto" Width="Auto" Content="Security (Recommended) Settings" Margin="20,4,20,10" Padding="10"/>
                             <TextBlock Margin="20,0,20,0" Padding="10" TextWrapping="WrapWithOverflow" MaxWidth="300">This is my recommended setting I use on all computers.<LineBreak/><LineBreak/> It will delay feature updates by 2 years and will install security updates 4 days after release.<LineBreak/><LineBreak/>Feature Updates: Adds features and often bugs to systems when they are released. You want to delay these as long as possible.<LineBreak/><LineBreak/>Security Updates: Typically these are pressing security flaws that need to be patched quickly. You only want to delay these a couple of days just to see if they are safe and don't break other systems. You don't want to go without these for ANY extended periods of time.</TextBlock>
                         </StackPanel>
                     </Border>
                     <Border Grid.Row="0" Grid.Column="2">
                         <StackPanel Background="{MainBackgroundColor}" SnapsToDevicePixels="True">
-                            <Button Name="WPFUpdatesdisable" FontSize="16" Content="Disable ALL Updates (NOT RECOMMENDED!)" Margin="20,4,20,10" Padding="10,10,10,10"/>
+                            <Button Name="WPFUpdatesdisable" FontSize="{ConfigTabButtonFontSize}" Height="Auto" Width="Auto" Content="Disable ALL Updates (NOT RECOMMENDED!)" Margin="20,4,20,10" Padding="10,10,10,10"/>
                             <TextBlock Margin="20,0,20,0" Padding="10" TextWrapping="WrapWithOverflow" MaxWidth="300">This completely disables ALL Windows Updates and is NOT RECOMMENDED.<LineBreak/><LineBreak/> However, it can be suitable if you use your system for a select purpose and do not actively browse the internet. <LineBreak/><LineBreak/>Note: Your system will be easier to hack and infect without security updates.</TextBlock>
                             <TextBlock Text=" " Margin="20,0,20,0" Padding="10" TextWrapping="WrapWithOverflow" MaxWidth="300"/>
                         </StackPanel>
@@ -772,7 +807,7 @@
                     </Grid>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="MicroWin" Visibility="Collapsed" Name="WPFTab5" Width="Auto" Height="Auto">
+            <TabItem Header="MicroWin" Visibility="Collapsed" Name="WPFTab5">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Grid Width="Auto" Height="Auto">
                     <Grid.ColumnDefinitions>
@@ -787,27 +822,38 @@
                         HorizontalAlignment="Stretch">
                     <StackPanel Name="MicrowinMain" Background="{MainBackgroundColor}" SnapsToDevicePixels="True" Grid.Column="0" Grid.Row="0">
                         <StackPanel Background="Transparent" SnapsToDevicePixels="True" Margin="1">
-                            <CheckBox x:Name="WPFMicrowinDownloadFromGitHub" Content="Download oscdimg.exe from CTT Github repo" IsChecked="False" Margin="1" />
+                            <CheckBox x:Name="WPFMicrowinDownloadFromGitHub" Content="Download oscdimg.exe from CTT Github repo" IsChecked="False" Margin="-10,1,1,1" />
                             <TextBlock Margin="5" Padding="1" TextWrapping="Wrap" Foreground="{ComboBoxForegroundColor}">
                                 Choose a Windows ISO file that you've downloaded <LineBreak/>
                                 Check the status in the console
                             </TextBlock>
-                            <CheckBox x:Name="WPFMicrowinISOScratchDir" Content="Use ISO directory for ScratchDir " IsChecked="False" Margin="1"
+                            <CheckBox x:Name="WPFMicrowinISOScratchDir" Content="Use ISO directory for ScratchDir " IsChecked="False" Margin="-10,1,1,1"
                                 ToolTip="Use ISO directory for ScratchDir " />
-
-                            <Button Name="MicrowinScratchDirBT" Margin="2" Padding="1">
-                              <Button.Content>
+                            <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" /> <!-- Takes the remaining space -->
+                                <ColumnDefinition Width="30" /> <!-- Fixed width for Button -->
+                            </Grid.ColumnDefinitions>
                                 <TextBox Name="MicrowinScratchDirBox" Background="Transparent" BorderBrush="{MainForegroundColor}"
-                                    Text="Scratch" Padding="0"
-                                    ToolTip="Alt Path For Scratch Directory" BorderThickness="1"
-                                    Margin="0,0,0,3" HorizontalAlignment="Left"
-                                    IsReadOnly="False"
+                                        Text="Scratch"
+                                        Margin="2"
+                                        IsReadOnly="False"
+                                        ToolTip="Alt Path For Scratch Directory"
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        Foreground="{LabelboxForegroundColor}">
+                                </TextBox>
+                                <Button Name="MicrowinScratchDirBT"
+                                    Width="Auto"
                                     Height="Auto"
-                                    Width="110"
-                                    Foreground="{ButtonForegroundColor}"
-                                  />
-                              </Button.Content>
-                            </Button>
+                                    Grid.Column="1"
+                                    Margin="2"
+                                    Padding="1"  VerticalAlignment="Center">
+                                    <Button.Content>
+                                    ...
+                                    </Button.Content>
+                                </Button>
+                            </Grid>
                             <TextBox Name="MicrowinFinalIsoLocation" Background="Transparent" BorderBrush="{MainForegroundColor}"
                                 Text="ISO location will be printed here"
                                 Margin="2"
@@ -828,12 +874,12 @@
                             <TextBlock Margin="6" Padding="1" TextWrapping="Wrap">Choose Windows SKU</TextBlock>
                             <ComboBox x:Name = "MicrowinWindowsFlavors" Margin="1" />
                             <TextBlock Margin="6" Padding="1" TextWrapping="Wrap">Choose Windows features you want to remove from the ISO</TextBlock>
-                            <CheckBox Name="WPFMicrowinKeepProvisionedPackages" Content="Keep Provisioned Packages" Margin="5,0" ToolTip="Do not remove Microsoft Provisioned packages from the ISO."/>
-                            <CheckBox Name="WPFMicrowinKeepAppxPackages" Content="Keep Appx Packages" Margin="5,0" ToolTip="Do not remove Microsoft Appx packages from the ISO."/>
-                            <CheckBox Name="WPFMicrowinKeepDefender" Content="Keep Defender" Margin="5,0" IsChecked="True" ToolTip="Do not remove Microsoft Antivirus from the ISO."/>
-                            <CheckBox Name="WPFMicrowinKeepEdge" Content="Keep Edge" Margin="5,0" IsChecked="True" ToolTip="Do not remove Microsoft Edge from the ISO."/>
+                            <CheckBox Name="WPFMicrowinKeepProvisionedPackages" Content="Keep Provisioned Packages" Margin="-10,5,0,0" ToolTip="Do not remove Microsoft Provisioned packages from the ISO."/>
+                            <CheckBox Name="WPFMicrowinKeepAppxPackages" Content="Keep Appx Packages" Margin="-10,5,0,0" ToolTip="Do not remove Microsoft Appx packages from the ISO."/>
+                            <CheckBox Name="WPFMicrowinKeepDefender" Content="Keep Defender" Margin="-10,5,0,0" IsChecked="True" ToolTip="Do not remove Microsoft Antivirus from the ISO."/>
+                            <CheckBox Name="WPFMicrowinKeepEdge" Content="Keep Edge" Margin="-10,5,0,0" IsChecked="True" ToolTip="Do not remove Microsoft Edge from the ISO."/>
                             <Rectangle Fill="{MainForegroundColor}" Height="2" HorizontalAlignment="Stretch" Margin="0,10,0,10"/>
-                            <CheckBox Name="MicrowinInjectDrivers" Content="Inject drivers (I KNOW WHAT I'M DOING)" Margin="5,0" IsChecked="False" ToolTip="Path to unpacked drivers all sys and inf files for devices that need drivers"/>
+                            <CheckBox Name="MicrowinInjectDrivers" Content="Inject drivers (I KNOW WHAT I'M DOING)" Margin="-10,5,0,0" IsChecked="False" ToolTip="Path to unpacked drivers all sys and inf files for devices that need drivers"/>
                             <TextBox Name="MicrowinDriverLocation" Background="Transparent" BorderThickness="1" BorderBrush="{MainForegroundColor}"
                                 Margin="6"
                                 Text=""
@@ -842,8 +888,9 @@
                                 Foreground="{LabelboxForegroundColor}"
                                 ToolTip="Path to unpacked drivers all sys and inf files for devices that need drivers"
                             />
+                            <CheckBox Name="MicrowinImportDrivers" Content="Import drivers from current system" Margin="-10,5,0,0" IsChecked="False" ToolTip="Export all third-party drivers from your system and inject them to the MicroWin image"/>
                             <Rectangle Fill="{MainForegroundColor}" Height="2" HorizontalAlignment="Stretch" Margin="0,10,0,10"/>
-                            <CheckBox Name="WPFMicrowinCopyToUsb" Content="Copy to Ventoy" Margin="5,0" IsChecked="False" ToolTip="Copy to USB disk with a label Ventoy"/>
+                            <CheckBox Name="WPFMicrowinCopyToUsb" Content="Copy to Ventoy" Margin="-10,5,0,0" IsChecked="False" ToolTip="Copy to USB disk with a label Ventoy"/>
                             <Rectangle Fill="{MainForegroundColor}" Height="2" HorizontalAlignment="Stretch" Margin="0,10,0,10"/>
                             <Button Name="WPFMicrowin" Content="Start the process" Margin="2" Padding="15"/>
                         </StackPanel>
@@ -863,10 +910,10 @@
 
                             <Grid Name = "BusyMessage" Visibility="Collapsed">
                               <TextBlock Name = "BusyText" Text="NBusy" Padding="22,2,1,1" />
-                              <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe MDL2 Assets" 
-                                  FontSize="14" Margin="16,0,0,0">&#xE701;</TextBlock>
-                            </Grid>                         
- 
+                              <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Segoe MDL2 Assets"
+                                  FontSize="{IconFontSize}" Margin="16,0,0,0">&#xE701;</TextBlock>
+                            </Grid>
+
                             <TextBlock x:Name = "asciiTextBlock"
                                 xml:space ="preserve"
                                 HorizontalAlignment = "Center"
@@ -874,19 +921,19 @@
                                 VerticalAlignment = "Top"
                                 Height = "Auto"
                                 Width = "Auto"
-                                FontSize = "10"
+                                FontSize = "{MicroWinLogoSize}"
                                 FontFamily = "Courier New"
                             >
-  /\/\  (_)  ___  _ __   ___  / / /\ \ \(_) _ __    
- /    \ | | / __|| '__| / _ \ \ \/  \/ /| || '_ \  
-/ /\/\ \| || (__ | |   | (_) | \  /\  / | || | | | 
-\/    \/|_| \___||_|    \___/   \/  \/  |_||_| |_| 
+  /\/\  (_)  ___  _ __   ___  / / /\ \ \(_) _ __
+ /    \ | | / __|| '__| / _ \ \ \/  \/ /| || '_ \
+/ /\/\ \| || (__ | |   | (_) | \  /\  / | || | | |
+\/    \/|_| \___||_|    \___/   \/  \/  |_||_| |_|
                             </TextBlock>
-                        
-                            <TextBlock Margin="15,15,15,0" 
-                                Padding="8,8,8,0" 
-                                VerticalAlignment="Center" 
-                                TextWrapping="WrapWithOverflow" 
+
+                            <TextBlock Margin="15,15,15,0"
+                                Padding="8,8,8,0"
+                                VerticalAlignment="Center"
+                                TextWrapping="WrapWithOverflow"
                                 Height = "Auto"
                                 Width = "Auto"
                                 Foreground="{ComboBoxForegroundColor}">
@@ -918,9 +965,9 @@
                                 <LineBreak/>
                                 If you are injecting drivers ensure you put all your inf, sys, and dll files for each driver into a separate directory
                             </TextBlock>
-                            <TextBlock Margin="15,0,15,15" 
-                                Padding = "1" 
-                                TextWrapping="WrapWithOverflow" 
+                            <TextBlock Margin="15,0,15,15"
+                                Padding = "1"
+                                TextWrapping="WrapWithOverflow"
                                 Height = "Auto"
                                 Width = "Auto"
                                 VerticalAlignment = "Top"

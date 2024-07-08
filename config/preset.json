@@ -1,32 +1,25 @@
 {
-  "desktop": [
+  "Standard": [
     "WPFTweaksAH",
+    "WPFTweaksConsumerFeatures",
     "WPFTweaksDVR",
     "WPFTweaksHiber",
     "WPFTweaksHome",
     "WPFTweaksLoc",
-    "WPFTweaksOO",
     "WPFTweaksServices",
     "WPFTweaksStorage",
     "WPFTweaksTele",
     "WPFTweaksWifi",
-    "WPFMiscTweaksPower"
+    "WPFTweaksDiskCleanup",
+    "WPFTweaksDeleteTempFiles",
+    "WPFTweaksEndTaskOnTaskbar",
+    "WPFTweaksRestorePoint",
+    "WPFTweaksTeredo",
+    "WPFTweaksPowershell7Tele"
   ],
-  "laptop": [
-    "WPFTweaksAH",
-    "WPFTweaksDVR",
+  "Minimal": [
+    "WPFTweaksConsumerFeatures",
     "WPFTweaksHome",
-    "WPFTweaksLoc",
-    "WPFTweaksOO",
-    "WPFTweaksServices",
-    "WPFTweaksStorage",
-    "WPFTweaksTele",
-    "WPFTweaksWifi",
-    "WPFMiscTweaksLapPower"
-  ],
-  "minimal": [
-    "WPFTweaksHome",
-    "WPFTweaksOO",
     "WPFTweaksServices",
     "WPFTweaksTele"
   ]

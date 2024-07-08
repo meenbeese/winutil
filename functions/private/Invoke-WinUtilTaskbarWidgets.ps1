@@ -1,22 +1,25 @@
-Function Invoke-WinUtilStickyKeys {
+function Invoke-WinUtilTaskbarWidgets {
     <#
+
     .SYNOPSIS
-        Disables/Enables Sticky Keyss on startup
+        Enable/Disable Taskbar Widgets
+
     .PARAMETER Enabled
-        Indicates whether to enable or disable Sticky Keys on startup
+        Indicates whether to enable or disable Taskbar Widgets
+
     #>
     Param($Enabled)
-    Try { 
+    Try{
         if ($Enabled -eq $false){
-            Write-Host "Enabling Sticky Keys On startup"
-            $value = 510
+            Write-Host "Enabling Taskbar Widgets"
+            $value = 1
         }
         else {
-            Write-Host "Disabling Sticky Keys On startup"
-            $value = 58
+            Write-Host "Disabling Taskbar Widgets"
+            $value = 0
         }
-        $Path = "HKCU:\Control Panel\Accessibility\StickyKeys"
-        Set-ItemProperty -Path $Path -Name Flags -Value $value
+        $Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+        Set-ItemProperty -Path $Path -Name TaskbarDa -Value $value
     }
     Catch [System.Security.SecurityException] {
         Write-Warning "Unable to set $Path\$Name to $Value due to a Security Exception"
